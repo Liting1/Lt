@@ -72,12 +72,12 @@ lt.randomChar = function(a) {
 	return String(arr[index])
 };
 
-/*
-	方法的作用：选中所以得多选框或者取消所以得单选框
-	参数说明：
-		第一个参数是你需要全部选中的多选框集合
-*/
-
+/**
+ * [allSelected 选中所以得多选框或者取消所以得单选框]
+ * @param  {[arr]} d    [description]
+ * @param  {[type]} bool [是你需要全部选中的多选框集合]
+ * @return {[undefined]}      无
+ */
 lt.allSelected = function (d, bool) {
 	bool = bool || true;
 	if(bool) {
