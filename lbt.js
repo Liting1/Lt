@@ -1,5 +1,6 @@
 
 function lt(a) {
+	// 判断传入参数是否为一个元素
 	if((typeof HTMLElement === 'object' ) ? a instanceof HTMLElement : 
 	a && typeof a === 'object' && a.nodeType === 1 && typeof a.nodeName === 'string'){
 		this.el = a;
@@ -7,6 +8,40 @@ function lt(a) {
 	
 	if (a && a.constructor === Function) lt.prototype.domReady(a); 
 	if (typeof a === 'string') return lt.prototype._init(a);
+	/*
+		轮播图默认配置项
+	*/
+	this.option = Object.create({
+		animate: 1, // 轮播的方式
+		css:{}, // css配置项
+		html:{ // html配置项
+			items:[]
+		},
+		roundlist: {}, // 列表圆点配置项
+		btn: {}, // 左右按钮配置项
+		autoplay: true, // 是否需要自动播放
+		time: 3000, // 单张图片切换事件 单位毫秒
+		transition: 1000 // 单张图片开始运动到街上运动的时间 单位毫秒
+	});
+	/*
+		放大镜默认配置
+	 */
+	this.magnifyOption = Object.create({ // 默认值
+		minImg: {
+			url: ''
+		},
+		maxImg: {
+			url: '',
+			width: 400, // 大图片盒子宽度
+			height: 400, // 大图片盒子高度
+			right: 1, // 大盒子距离左边小盒子的距离
+			top: 0 // 大盒子距离顶部的距离
+		},
+		mask: {
+			width: 200,
+			height: 200
+		}
+	});
 }
 
 lt.prototype = {
@@ -24,21 +59,6 @@ lt.prototype = {
 			}
 		}
 		return new lt();
-	},
-	/*
-		默认的配置项
-	*/
-	option: {
-		animate: 1, // 轮播的方式
-		css:{}, // css配置项
-		html:{ // html配置项
-			items:[]
-		},
-		roundlist: {}, // 列表圆点配置项
-		btn: {}, // 左右按钮配置项
-		autoplay: true, // 是否需要自动播放
-		time: 3000, // 单张图片切换事件 单位毫秒
-		transition: 1000 // 单张图片开始运动到街上运动的时间 单位毫秒
 	},
 	/*
 		JavaScript 事件名数组
@@ -71,6 +91,9 @@ lt.prototype = {
 			${selector} {
 				position: relative;
 				overflow: hidden;
+			}
+			${selector} li {
+				list-style: none;
 			}
 	        ${selector} .img-box a {
 	            display: block;
@@ -109,6 +132,7 @@ lt.prototype = {
 	        	top: 50%;
 	        	transform: translateY(-50%);
 	        	z-index: 2;
+	        	font-size: 50px;
 	        }
 	        ${selector} .btn-left {
 	        	left: 0;
@@ -199,8 +223,8 @@ lt.prototype = {
             <ul class="img-box">${imgList}</ul>
             <ul class="list-box">${roundList}</ul>
 	        <div class="btn-box">
-				<button class="btn-left">左边按钮</button>
-				<button class="btn-right">右边按钮</button>
+				<button class="btn-left">&lt;</button>
+				<button class="btn-right">&gt;</button>
 	        </div>`;
 	},
 	/*
@@ -222,7 +246,6 @@ lt.prototype = {
 	*/
 	roundList(){
 		var {roundlist} = this;
-		// console.log(roundlist)
 		for(let i = 0; i< roundlist.length; i++){
 			roundlist[i].onclick = ()=>{
 				this.currentIndex = i;
@@ -284,15 +307,16 @@ lt.prototype = {
 	/*
 		实现轮播函数
 	*/
+
 	lbt(o) {
 		// 只能是一个元素
 		this.el = this.el[0];
 		// 合并配置对象
 		this.merge(this.option, o);
+		console.log(this.optionA)
 		// 初始化
 		var { el, option, roundList} = this,
     	items = option.html.items;
-		// console.log(el);
     	// 渲染CSS样式和DOM节点
 		this.renderCss();
 		this.renderDom();
@@ -438,7 +462,7 @@ lt.prototype = {
 	*/
 	magnifyCss(){
 		var {selector} = this,
-			{maximg, imgmask} = this.magnifyOption,
+			{maxImg, mask} = this.magnifyOption,
 			style = document.createElement('style');
 		style.innerHTML = `
 			${selector} {
@@ -449,17 +473,17 @@ lt.prototype = {
 				height: 100%;
 			}
 			${selector} .maxImg {
-				width: ${maximg.width}px;
-				height: ${maximg.height}px;
+				width: ${maxImg.width}px;
+				height: ${maxImg.height}px;
 				overflow: hidden;
 				position: absolute;
-				top: ${maximg.top}px;
-				right: -${maximg.width+maximg.right}px;
+				top: ${maxImg.top}px;
+				right: -${maxImg.width+maxImg.right}px;
 				box-sizing: border-box;
 			}
 			${selector} .img-mask {
-				width: ${imgmask.width}px;
-				height: ${imgmask.height}px;
+				width: ${mask.width}px;
+				height: ${mask.height}px;
 				background-color: rgba(0,0,0,.2);
 				left: 0;
 				top: 0;
@@ -469,32 +493,16 @@ lt.prototype = {
 			document.head.appendChild(style);
 	},
 	magnifyDom() {
-		var {minimg, maximg} = this.magnifyOption;
+		var {minImg, maxImg} = this.magnifyOption;
 		var str = `
 			<div class="minImg">
-				<img src="${minimg.url}">
+				<img src="${minImg.url}">
 				<div class="img-mask" style="display:none"></div>
 			</div>
 			<div class="maxImg" style="display:none">
-				<img src="${maximg.url}">
+				<img src="${maxImg.url}">
 			</div>`
 		this.el.innerHTML = str;
-	},
-	magnifyOption: { // 默认值
-		minimg: {
-			url: ''
-		},
-		maximg: {
-			url: '',
-			width: 400, // 大图片盒子宽度
-			height: 400, // 大图片盒子高度
-			right: 1, // 大盒子距离左边小盒子的距离
-			top: 0 // 大盒子距离顶部的距离
-		},
-		imgmask: {
-			width: 200,
-			height: 200
-		}
 	},
 	magnify(o){
 		this.el = this.el[0]; // 只能是一个元素
@@ -505,33 +513,35 @@ lt.prototype = {
 			minimg = el.querySelector('.minImg'), // 装小图片的盒子
 			maximg = el.querySelector('.maxImg'), // 装大图片的盒子
 			img = el.querySelector('.maxImg img'), // 大图片
-			imgmask = el.querySelector('.img-mask'), // 遮罩盒子
+			mask = el.querySelector('.img-mask'), // 遮罩盒子
 			maxX = 0, // 图片遮罩运动的最大X方向位移
 			maxY = 0,  // 图片遮罩运动的最大Y方向位移
 			maximgX = 0, // 右侧大图片的最大X方向位移
-			maximgY = 0; // 右侧大图片的最大Y方向位移
+			maximgY = 0, // 右侧大图片的最大Y方向位移
+			moveY = 0,
+			moveX = 0;
 		minimg.onmouseenter = function(){
 			maximg.style.display = 'block';
-			imgmask.style.display = 'block';
+			mask.style.display = 'block';
 			// 必须在显示后获取元素的宽度和高度
-			maxX = minimg.offsetWidth - imgmask.offsetWidth;
-			maxY = minimg.offsetHeight - imgmask.offsetHeight;
+			maxX = minimg.offsetWidth - mask.offsetWidth;
+			maxY = minimg.offsetHeight - mask.offsetHeight;
 			maximgX = img.offsetWidth - maximg.offsetWidth;
 			maximgY = img.offsetHeight - maximg.offsetHeight;
 		}
 		minimg.onmouseleave = function(){
 			maximg.style.display = 'none';
-			imgmask.style.display = 'none';
+			mask.style.display = 'none';
 		}
 		minimg.onmousemove = function(e){
-			var moveY = e.clientY-this.offsetTop - imgmask.offsetHeight/2;
-			var moveX = e.clientX-this.offsetLeft - imgmask.offsetWidth/2;
+			moveY = e.pageY-this.offsetTop - mask.offsetHeight/2;
+			moveX = e.pageX-this.offsetLeft - mask.offsetWidth/2;
 			if(moveX <= 0) moveX = 0;
 			if(moveY <= 0) moveY = 0;
 			if(moveX >= maxX) moveX = maxX;
 			if(moveY >= maxY) moveY = maxY;
-			imgmask.style.left = moveX+'px';
-			imgmask.style.top = moveY+'px';
+			mask.style.left = moveX+'px';
+			mask.style.top = moveY+'px';
 			var biliX = maximgX/maxX,
 				biliY = maximgY/maxY;
 			img.style.marginLeft = -biliX * moveX + 'px';

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>轮播图</title>
+	<script src="../lbt.js"></script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		#lbt {
+			width: 400px;
+			height: 300px;
+			margin-bottom: 20px;
+		}
+		#lbt2 {
+			width: 400px;
+			height: 300px;
+		}
+	</style>
+</head>
+<body>
+	<div id="lbt"></div>
+	<div id="lbt2"></div>
+	<script>
+		lt('#lbt').lbt({
+			html: {
+				items: [{
+					img: './images/lbt1.jpg',
+					url: 'http://www.baidu.com'
+				}, {
+					img: './images/lbt2.jpg',
+					url: 'http://wwww.taobao,com'
+				}, {
+					img: './images/lbt3.jpg',
+					url: 'http://www.qq.com'
+				}, {
+					img: './images/lbt2.jpg',
+					url: 'http://wwww.taobao,com'
+				}]
+			},
+			autoplay: false
+		});
+
+		lt('#lbt2').lbt({
+			animate: 2,
+			html: {
+				items: [{
+					img: './images/lbt1.jpg',
+					url: 'http://www.baidu.com'
+				}, {
+					img: './images/lbt2.jpg',
+					url: 'http://wwww.taobao,com'
+				}, {
+					img: './images/lbt3.jpg',
+					url: 'http://www.qq.com'
+				}]
+			},
+			transition: 300, // 每张图片过度动画的时间
+			time: 2000 // 每隔多少秒切换一张图片的时间
+		})
+	</script>
+</body>
+</html>
