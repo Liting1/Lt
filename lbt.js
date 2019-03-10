@@ -11,7 +11,7 @@ function lt(a) {
 	/*
 		轮播图默认配置项
 	*/
-	this.option = Object.create({
+	this.option = {
 		animate: 1, // 轮播的方式
 		css:{}, // css配置项
 		html:{ // html配置项
@@ -22,7 +22,7 @@ function lt(a) {
 		autoplay: true, // 是否需要自动播放
 		time: 3000, // 单张图片切换事件 单位毫秒
 		transition: 1000 // 单张图片开始运动到街上运动的时间 单位毫秒
-	});
+	};
 	/*
 		放大镜默认配置
 	 */
@@ -82,11 +82,26 @@ lt.prototype = {
 	/*
 		渲染CSS样式
 	*/
+	_isStyle(str) {
+		var style = document.querySelectorAll('style'),
+			k = -1;
+		for(var i = 0; i<style.length; i++){
+			if(style[i].dataset.lt == 'style'){
+				k = i;
+			}
+		}
+		if(k >-1) {
+			style[k].innerHTML += str;
+		} else {
+			style = document.createElement('style');
+			style.dataset.lt = 'style';
+        	style.innerHTML = str;
+        	document.querySelector('head').appendChild(style);
+		}
+	},
 	renderCss() {
 		var { selector, el }  = this,
 			{ transition, animate } = this.option,
-			str = '',
-			style = document.createElement('style');
 		str = `
 			${selector} {
 				position: relative;
@@ -143,38 +158,34 @@ lt.prototype = {
 	        ${selector} .list-box li.active {
 				background-color: #fff;
 	        }`;	        
-        if(animate === 1) {
-        	str += `
-	        	${selector} .img-box {
-		        	height: 100%;
-		        	position: relative;
-		        }
-        		${selector} .img-box li {
-		            height: 100%;
-		            width: 100%;
-		            overflow: hidden;
-		            position: absolute;
-		            transition: all ${transition/1000}s;
-		            opacity: 0;
-		        }`;
-        }
-        if(animate === 2) {
-        	str += `
-	        	${selector} .img-box {
-	        		height:100%;
-	        		transition: all ${transition/1000}s;
-	        		transform: translateX(${-el.offsetWidth}px);
-	        	}
-	        	${selector} .img-box li {
-	        		position: relative;
-	        		overflow:hidden;
-		            height: 100%;
-		            width: ${el.offsetWidth}px;
-		            float:left;
-		        }`;
-        }
-        style.innerHTML = str;
-        document.querySelector('head').appendChild(style);
+        if(animate === 1) str += `
+        	${selector} .img-box {
+	        	height: 100%;
+	        	position: relative;
+	        }
+    		${selector} .img-box li {
+	            height: 100%;
+	            width: 100%;
+	            overflow: hidden;
+	            position: absolute;
+	            transition: all ${transition/1000}s;
+	            opacity: 0;
+	        }`;
+
+        if(animate === 2) str += `
+        	${selector} .img-box {
+        		height:100%;
+        		transition: all ${transition/1000}s;
+        		transform: translateX(${-el.offsetWidth}px);
+        	}
+        	${selector} .img-box li {
+        		position: relative;
+        		overflow:hidden;
+	            height: 100%;
+	            width: ${el.offsetWidth}px;
+	            float:left;
+	        }`;
+	    this._isStyle(str);
 	},
 	/*
 		自动适应窗口大小
@@ -313,7 +324,6 @@ lt.prototype = {
 		this.el = this.el[0];
 		// 合并配置对象
 		this.merge(this.option, o);
-		console.log(this.optionA)
 		// 初始化
 		var { el, option, roundList} = this,
     	items = option.html.items;
