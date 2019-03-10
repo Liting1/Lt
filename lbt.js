@@ -26,7 +26,7 @@ function lt(a) {
 	/*
 		放大镜默认配置
 	 */
-	this.magnifyOption = Object.create({ // 默认值
+	this.magnifyOption = { // 默认值
 		minImg: {
 			url: ''
 		},
@@ -40,8 +40,9 @@ function lt(a) {
 		mask: {
 			width: 200,
 			height: 200
-		}
-	});
+		},
+		imgList: []
+	};
 }
 
 lt.prototype = {
@@ -473,8 +474,7 @@ lt.prototype = {
 	magnifyCss(){
 		var {selector} = this,
 			{maxImg, mask} = this.magnifyOption,
-			style = document.createElement('style');
-		style.innerHTML = `
+			style = `
 			${selector} {
 				position: relative;
 			}
@@ -499,11 +499,24 @@ lt.prototype = {
 				top: 0;
 				position: absolute;
 				z-index: 2;
+			}
+			${selector} .imgList ul {
+				overflow: hidden;
+			}
+			${selector} .imgList ul li {
+				list-style: none;
+				float: left;
+				width: 100px;
+				height: 100px;
+				margin: 0 5px;
+			}
+			${selector} .imgList ul li img {
+				width: 100%;
 			}`;
-			document.head.appendChild(style);
+			this._isStyle(style);
 	},
 	magnifyDom() {
-		var {minImg, maxImg} = this.magnifyOption;
+		var {minImg, maxImg, imgList} = this.magnifyOption;
 		var str = `
 			<div class="minImg">
 				<img src="${minImg.url}">
@@ -511,7 +524,14 @@ lt.prototype = {
 			</div>
 			<div class="maxImg" style="display:none">
 				<img src="${maxImg.url}">
-			</div>`
+			</div>`;
+			if(imgList.length>0) {
+				var imgtr = imgList.map(item => `<li><img src="${item.minUrl}"></li>`).join('');
+				str += `
+				<div class="imgList">
+					<ul>${imgtr}</ul>
+				</div>`
+			}
 		this.el.innerHTML = str;
 	},
 	magnify(o){
@@ -524,6 +544,8 @@ lt.prototype = {
 			maximg = el.querySelector('.maxImg'), // 装大图片的盒子
 			img = el.querySelector('.maxImg img'), // 大图片
 			mask = el.querySelector('.img-mask'), // 遮罩盒子
+			imgList = el.querySelectorAll('.imgList img'),
+			images = el.querySelector('.minImg img'),
 			maxX = 0, // 图片遮罩运动的最大X方向位移
 			maxY = 0,  // 图片遮罩运动的最大Y方向位移
 			maximgX = 0, // 右侧大图片的最大X方向位移
@@ -556,6 +578,12 @@ lt.prototype = {
 				biliY = maximgY/maxY;
 			img.style.marginLeft = -biliX * moveX + 'px';
 			img.style.marginTop = -biliY * moveY + 'px';
+		}
+		for(let i = 0; i<imgList.length; i++) {
+			imgList[i].onclick = ()=>{
+				images.src = this.magnifyOption.imgList[i].minUrl;
+				img.src = this.magnifyOption.imgList[i].maxUrl;
+			}
 		}
 	}
 }
@@ -698,14 +726,16 @@ lt.fn = {
 		方法作用说明：移除cookie
 		参数说明：
 			参数为需要移除cookie 的名字 类型为String
+			path 为指定目录的cookie 如果不写默认当前目录下的cookie
 		返回值说明：
 			返回一个布尔值 true 代表删除成功，false表示删除失败
 	*/
-	removeCookie(name) {
+	removeCookie(name, path) {
 		var cook = this.getCookie(name);
 		var date = new Date();
 		this.setCookie(cook, '', {
-			'expires': date.setTime(date.getTime()-10).toUTCString()
+			expires: date.setTime(date.getTime()-10).toUTCString(),
+			path: (path ? path : null)
 		});
 		return !this.getCookie(name);
 	},
