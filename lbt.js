@@ -28,10 +28,10 @@ function lt(a) {
 	 */
 	this.magnifyOption = { // 默认值
 		minImg: {
-			url: ''
+			url: []
 		},
 		maxImg: {
-			url: '',
+			url: [],
 			width: 400, // 大图片盒子宽度
 			height: 400, // 大图片盒子高度
 			right: 1, // 大盒子距离左边小盒子的距离
@@ -41,7 +41,7 @@ function lt(a) {
 			width: 200,
 			height: 200
 		},
-		imgList: []
+		imgList: true
 	};
 }
 
@@ -473,16 +473,20 @@ lt.prototype = {
 	*/
 	magnifyCss(){
 		var {selector} = this,
-			{maxImg, mask} = this.magnifyOption,
+			{maxImg, mask, minImg} = this.magnifyOption,
 			style = `
 			${selector} {
 				position: relative;
 			}
-			${selector} .minImg, .minImg img {
+			${selector} .min-box{
+				border: solid 1px #ddd;
+				box-sizing: border-box;
+			}
+			${selector} .min-box, ${selector} .min-box img {
 				width: 100%;
 				height: 100%;
 			}
-			${selector} .maxImg {
+			${selector} .max-box {
 				width: ${maxImg.width}px;
 				height: ${maxImg.height}px;
 				overflow: hidden;
@@ -491,7 +495,7 @@ lt.prototype = {
 				right: -${maxImg.width+maxImg.right}px;
 				box-sizing: border-box;
 			}
-			${selector} .img-mask {
+			${selector} .mask {
 				width: ${mask.width}px;
 				height: ${mask.height}px;
 				background-color: rgba(0,0,0,.2);
@@ -500,72 +504,123 @@ lt.prototype = {
 				position: absolute;
 				z-index: 2;
 			}
-			${selector} .imgList ul {
-				overflow: hidden;
+			${selector} .img-list {
+				position: relative;
 			}
-			${selector} .imgList ul li {
+			${selector} .img-list > button {
+				width:25px;
+				height: 100%;
+				position: absolute;
+			}
+			${selector} .img-list .prev {
+				left: 0;
+				top: 0;
+			}
+			${selector} .img-list .next {
+				right: 0;
+				top: 0;
+			}
+			${selector} .img-list-content {
+				overflow: hidden;
+				margin: 0 26px;
+			}
+			${selector} .img-list ul {
+				width: ${80 * minImg.url.length}px;
+				transition: all .3s;
+			}
+			${selector} .img-list ul li {
 				list-style: none;
 				float: left;
-				width: 100px;
-				height: 100px;
-				margin: 0 5px;
+				width: 60px;
+				height: 60px;
+				margin: 0 10px;
+				cursor: pointer;
 			}
-			${selector} .imgList ul li img {
+			${selector} .img-list ul li img {
 				width: 100%;
+				height: 100%;
+				display: block;
 			}`;
 			this._isStyle(style);
 	},
 	magnifyDom() {
 		var {minImg, maxImg, imgList} = this.magnifyOption;
 		var str = `
-			<div class="minImg">
-				<img src="${minImg.url}">
-				<div class="img-mask" style="display:none"></div>
+			<div class="min-box">
+				<img src="${minImg.url[0]}">
+				<div class="mask" style="display:none"></div>
 			</div>
-			<div class="maxImg" style="display:none">
-				<img src="${maxImg.url}">
+			<div class="max-box" style="display:none">
+				<img src="${maxImg.url[0]}">
 			</div>`;
-			if(imgList.length>0) {
-				var imgtr = imgList.map(item => `<li><img src="${item.minUrl}"></li>`).join('');
+			if(imgList) {
+				var imgtr = minImg.url.map(item => `<li><img src="${item}"></li>`).join('');
 				str += `
-				<div class="imgList">
-					<ul>${imgtr}</ul>
+				<div class="img-list">
+					<button class="prev">&lt;</button>
+					<div class="img-list-content">
+						<ul>${imgtr}</ul>
+					</div>
+					<button class="next">&gt;</button>
 				</div>`
 			}
 		this.el.innerHTML = str;
+	},
+	magnifyList(el, minImg, maxImg){
+		var imgList = el.querySelectorAll('.img-list img'), // 图片列表
+			ul = el.querySelector('.img-list ul'),
+			prevBtn = el.querySelector('.img-list .prev'),
+			nextBtn = el.querySelector('.img-list .next'),
+			i = 0;
+
+		for(let j = 0; j<imgList.length; j++) {
+			imgList[j].onclick = ()=>{
+				minImg.src = this.magnifyOption.minImg.url[j];
+				maxImg.src = this.magnifyOption.maxImg.url[j];
+			}
+		}
+		nextBtn.onclick = function(){
+			i >= imgList.length-5 ? i = imgList.length-5 : i++;
+			ul.style.marginLeft =  `-${80*i}px`;
+		}
+
+		prevBtn.onclick = function(){
+			i<=0? i = 0 : i--;
+			ul.style.marginLeft =  `-${80*i}px`;
+		}
 	},
 	magnify(o){
 		this.el = this.el[0]; // 只能是一个元素
 		this.merge(this.magnifyOption, o);
 		this.magnifyCss();
 		this.magnifyDom();
-		var {el} = this,
-			minimg = el.querySelector('.minImg'), // 装小图片的盒子
-			maximg = el.querySelector('.maxImg'), // 装大图片的盒子
-			img = el.querySelector('.maxImg img'), // 大图片
-			mask = el.querySelector('.img-mask'), // 遮罩盒子
-			imgList = el.querySelectorAll('.imgList img'),
-			images = el.querySelector('.minImg img'),
+		var {el, magnifyOption} = this,
+			minBox = el.querySelector('.min-box'), // 装小图片的盒子
+			maxBox = el.querySelector('.max-box'), // 装大图片的盒子
+			maxImg = el.querySelector('.max-box img'), // 大图片
+			minImg = el.querySelector('.min-box img'), // 小图片
+			mask = el.querySelector('.mask'), // 遮罩盒子
 			maxX = 0, // 图片遮罩运动的最大X方向位移
 			maxY = 0,  // 图片遮罩运动的最大Y方向位移
 			maximgX = 0, // 右侧大图片的最大X方向位移
 			maximgY = 0, // 右侧大图片的最大Y方向位移
 			moveY = 0,
 			moveX = 0;
-		minimg.onmouseenter = function(){
-			maximg.style.display = 'block';
+		if(magnifyOption.imgList) this.magnifyList(el, maxImg, minImg);
+		minBox.onmouseenter = function(){
+			maxBox.style.display = 'block';
 			mask.style.display = 'block';
 			// 必须在显示后获取元素的宽度和高度
-			maxX = minimg.offsetWidth - mask.offsetWidth;
-			maxY = minimg.offsetHeight - mask.offsetHeight;
-			maximgX = img.offsetWidth - maximg.offsetWidth;
-			maximgY = img.offsetHeight - maximg.offsetHeight;
+			maxX = minBox.offsetWidth - mask.offsetWidth;
+			maxY = minBox.offsetHeight - mask.offsetHeight;
+			maximgX = maxImg.offsetWidth - maxBox.offsetWidth;
+			maximgY = maxImg.offsetHeight - maxBox.offsetHeight;
 		}
-		minimg.onmouseleave = function(){
-			maximg.style.display = 'none';
+		minBox.onmouseleave = function(){
+			maxBox.style.display = 'none';
 			mask.style.display = 'none';
 		}
-		minimg.onmousemove = function(e){
+		minBox.onmousemove = function(e){
 			moveY = e.pageY-this.offsetTop - mask.offsetHeight/2;
 			moveX = e.pageX-this.offsetLeft - mask.offsetWidth/2;
 			if(moveX <= 0) moveX = 0;
@@ -576,14 +631,8 @@ lt.prototype = {
 			mask.style.top = moveY+'px';
 			var biliX = maximgX/maxX,
 				biliY = maximgY/maxY;
-			img.style.marginLeft = -biliX * moveX + 'px';
-			img.style.marginTop = -biliY * moveY + 'px';
-		}
-		for(let i = 0; i<imgList.length; i++) {
-			imgList[i].onclick = ()=>{
-				images.src = this.magnifyOption.imgList[i].minUrl;
-				img.src = this.magnifyOption.imgList[i].maxUrl;
-			}
+			maxImg.style.marginLeft = -biliX * moveX + 'px';
+			maxImg.style.marginTop = -biliY * moveY + 'px';
 		}
 	}
 }

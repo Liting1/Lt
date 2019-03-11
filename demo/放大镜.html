@@ -23,10 +23,14 @@
 	<script>
 		lt('#magnify').magnify({
 			minImg: { // 小图片路径
-				url: './images/min.jpg'
+				url: [
+					'./images/min.jpg'
+				]
 			},
 			maxImg: {
-				url: './images/max.jpg',
+				url: [
+					'./images/max.jpg'
+				],
 				width: 355.5,
 				height: 355.5,
 				top: 50,
@@ -35,8 +39,22 @@
 			mask:{
 				width: 200,
 				height: 200
-			}
+			},
+			imgList: false // 是否显示图片列表
 		})
+	</script>
+
+	<script>
+		var x = 200;
+		var time = 500
+		for(var i = 0; ;i++) {
+			x = x-x/5;
+			console.log(x)
+			if(Math.floor(x)<=0) {
+				console.log(time/i)
+				break;
+			}
+		}
 	</script>
 </body>
 </html>
