@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .box {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+    }
+    </style>
+    <script src="../lbt.js"></script>
+    <script>
+        lt(function(){
+            // lt('.box').click(function(){
+            //     console.log(this.textContent);
+            // })
+            // lt('.box').mouseenter(function(){
+            //     console.log(this.textContent);
+            // })
+            console.log(lt('.box'))
+        })
+
+    </script>
+</head>
+
+<body>
+    <div class="box">1</div>
+    <div class="box">2</div>
+    <div class="box">3</div>
+    <script>
+    // var x = 200; // 位移
+    // var time = 500 // 时间
+    // var ci = 500/30 // 循环的次数
+    // var k = 0;
+
+    // for(var i = 1; i<=ci; i++) {
+    // 	1/Math.pow(m,i)	
+    // }
+    // 
+    </script>
+    <!-- <script>
+    jQuery.extend = jQuery.fn.extend = function() {
+        var options, name, src, copy, copyIsArray, clone,
+            target = arguments[0] || {},
+            i = 1,
+            length = arguments.length,
+            deep = false;
+        if (typeof target === "boolean") {
+            deep = target;
+            target = arguments[i] || {};
+            i++;
+        }
+        if (typeof target !== "object" && !jQuery.isFunction(target)) {
+            target = {};
+        }
+        if (i === length) {
+            target = this;
+            i--;
+        }
+        for (; i < length; i++) {
+
+            if ((options = arguments[i]) != null) {
+                for (name in options) {
+                    src = target[name];
+                    copy = options[name];
+                    if (target === copy) {
+                        continue;
+                    }
+                    if (deep && copy && (jQuery.isPlainObject(copy) ||
+                            (copyIsArray = Array.isArray(copy)))) {
+                        if (copyIsArray) {
+                            copyIsArray = false;
+                            clone = src && Array.isArray(src) ? src : [];
+                        } else {
+                            clone = src && jQuery.isPlainObject(src) ? src : {};
+                        }
+                        target[name] = jQuery.extend(deep, clone, copy);
+                    } else if (copy !== undefined) {
+                        target[name] = copy;
+                    }
+                }
+            }
+        }
+        return target;
+    };
+    </script> -->
+</body>
+
+</html>

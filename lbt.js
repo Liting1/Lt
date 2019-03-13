@@ -1,13 +1,16 @@
 
 function lt(a) {
-	// 判断传入参数是否为一个元素
-	if((typeof HTMLElement === 'object' ) ? a instanceof HTMLElement : 
-	a && typeof a === 'object' && a.nodeType === 1 && typeof a.nodeName === 'string'){
-		this.el = a;
+	let {domReady} = lt.prototype;
+	// 传入的参数是字符串
+	if(lt.isStr(a)) {
+		return lt.prototype.init(a);
 	}
+	// 判断是否是函数
+	if(lt.isFn(a)) {
+		domReady(a);
+	}
+	// 判断传入参数是否为一个元素
 	
-	if (a && a.constructor === Function) lt.prototype.domReady(a); 
-	if (typeof a === 'string') return lt.prototype._init(a);
 	/*
 		轮播图默认配置项
 	*/
@@ -44,27 +47,80 @@ function lt(a) {
 		imgList: true
 	};
 }
+lt.extend = lt.prototype.extend = function(){
+	var options,name,clone,i = 1;
+	var target = arguments[0];
+	var length = arguments.length;
+	var deep = false;
 
-lt.prototype = {
-	constructor: lt,
-	domReady(a){
-		document.addEventListener('DOMContentLoaded', a);
-	},
-	_init(a) {
-		this.selector = a;
-		var el = document.querySelectorAll(a);
-		this.el = el;
-		for(let i of this.events){
-			this[i] = (cb)=>{
-				el.forEach(item=>item.addEventListener(i,cb))
+	// 判断第一个参数是不是布尔值
+	if(typeof target === 'boolean') {
+		deep = traget;
+		target = arguments[i] || {};
+		i++;
+	}
+	// 如果第一个参数不是对象或者函数
+	if(typeof target !== 'object' && typeof target !== 'function'){
+		target = {};
+	}
+	// 如果只有一个参数
+	if(i === length) {
+		target = this;
+		i--;
+	}
+
+	// 遍历每一个参数
+	for(; i<length; i++) {
+		if((options = arguments[i]) != null) {
+			for(name in options) {
+				if(deep && options[name] && (lt.isObject(target[name]) || Array.isArray(options[name])) ) { // 如果是数组
+					if(Array.isArray(target[name])) {
+						clone = target[name] && Array.isArray(target[name])?target[name]:[];
+					} else {// 如果是对象
+						clone = target[name] && lt.isObject(target[name])?target[name]:{}; 
+					}
+					target[name] = lt.extend(deep,clone,options[name]);
+				} else if(options[name] !==undefined) {
+					target[name] = options[name];
+				}
 			}
+
 		}
-		return new lt();
-	},
+	}
+	return target;
+}
+
+lt.prototype.extend({
+	constructor: lt,
 	/*
 		JavaScript 事件名数组
 	 */
 	events: ['click', 'mouseleave', 'mouseenter', 'touchstart', 'touchmove', 'touchend'],
+	/*
+		dom 加载完毕事件
+	 */
+	domReady(a){
+		document.addEventListener('DOMContentLoaded', a);
+	},
+	init(a) {
+		// 判断是否是选择符
+		let l = new lt();
+		if(a.match(/^[a-z|#|\.].+/)) {
+			this.selector = a.match(/^[a-z|#|\.].+/)[0];
+			this.el = document.querySelectorAll(this.selector);
+			// 添加事件
+			for(let key of this.events){
+				this[key] = (cb)=>{
+					this.el.forEach(item=>item.addEventListener(key,cb))
+				}
+			}
+			for(let i = 0; i<this.el.length; i++) {
+				l[i] = this.el[i];
+			}
+			l.length = this.el.length;
+		}
+		return l;
+	},
 	/*
 		简单的对象深合并
 	*/
@@ -158,7 +214,7 @@ lt.prototype = {
 	        }
 	        ${selector} .list-box li.active {
 				background-color: #fff;
-	        }`;	        
+	        }`;
         if(animate === 1) str += `
         	${selector} .img-box {
 	        	height: 100%;
@@ -288,7 +344,6 @@ lt.prototype = {
 		this.round(this.currentIndex-1);
 		imgBox.style.transform = `translateX(${-this.currentIndex*el.offsetWidth}px)`;
 		this.istransition = false;
-
 	},
 	round(index){
     	for(let i = 0; i< this.roundlist.length; i++){
@@ -443,7 +498,7 @@ lt.prototype = {
 		// 占时只能一次给一个元素元素添加
 		let dom = this.el[0];
 		clearInterval(dom.timer);
-		dom.timer = setInterval(function(){
+		dom.timer = setInterval(()=>{
 			var toggle = true;
 			for(var i in option) {
 				// 获取对应的初始状态
@@ -463,7 +518,7 @@ lt.prototype = {
 				clearInterval(dom.timer);
 				if (fn) fn();
 			}
-		},18);
+		},20);
 		function getStep (step) {
 			return step < 0 ? Math.floor(step) : Math.ceil(step);
 		}
@@ -635,19 +690,24 @@ lt.prototype = {
 			maxImg.style.marginTop = -biliY * moveY + 'px';
 		}
 	}
-}
+})
 
 /*
 	给对象添加附加属性
 */
-
-lt.fn = {
-	/* 
-		此方法只能复制一层
-	*/
-	_init(lt){
-		for(var key in this) lt[key] = this[key];
+lt.extend({
+	isObject(o) {
+		return toString.call(o) === '[object Object]';
 	},
+	isFn(fn) {
+		return toString.call(fn) === '[object Function]';
+	},
+	isStr(str) {
+		return toString.call(str) === '[object String]';
+	}
+})
+
+lt.extend({
 	/*
 		方法的作用: 生成随机数子类型的字符串
 		参数说明: 
@@ -950,10 +1010,5 @@ lt.fn = {
 			content.style.marginTop = iy + 'px';
 		}
 	}
-}
-
-
-/*浅拷贝方法*/
-lt.fn._init(lt);
-
+})
 window.lt = lt;
