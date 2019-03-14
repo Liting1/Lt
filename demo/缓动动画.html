@@ -22,19 +22,34 @@
             // lt('.box').click(function(){
             //     console.log(this.textContent);
             // })
+
             // lt('.box').mouseenter(function(){
             //     console.log(this.textContent);
             // })
-            console.log(lt('.box'))
-        })
+            // var k = lt('.box');
+            // for(var i = 0; i < k.length; i++){
+            //     console.log(k[i])
+            // }
+
+            // console.log(lt('.box').find('span'));
+        });
+        lt(function(){
+            // console.log(lt('.box').find('span'))
+            var a = lt('.box').find('span').click(function(){
+                console.log(123)
+            }).mouseenter(function(){
+                console.log(3456)
+            })
+            console.log(a)
+        });
 
     </script>
 </head>
 
 <body>
     <div class="box">1</div>
-    <div class="box">2</div>
-    <div class="box">3</div>
+    <div class="box">2 <p><span>&nbsp;点击</span></p></div>
+    <div class="box">3 <span>&lt;</span></div>
     <script>
     // var x = 200; // 位移
     // var time = 500 // 时间

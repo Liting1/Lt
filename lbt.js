@@ -47,12 +47,16 @@ function lt(a) {
 		imgList: true
 	};
 }
+/**
+ * 当参数为一个对象 -- 将传入的对象进行浅拷贝到lt 对象 或lt.prototype 对象上;
+ * 当参数为多个对象时 会进行多个对象深层次的复制合并为一个对象
+ * @return {object} 复制后的对象
+ */
 lt.extend = lt.prototype.extend = function(){
 	var options,name,clone,i = 1;
 	var target = arguments[0];
 	var length = arguments.length;
 	var deep = false;
-
 	// 判断第一个参数是不是布尔值
 	if(typeof target === 'boolean') {
 		deep = traget;
@@ -68,7 +72,6 @@ lt.extend = lt.prototype.extend = function(){
 		target = this;
 		i--;
 	}
-
 	// 遍历每一个参数
 	for(; i<length; i++) {
 		if((options = arguments[i]) != null) {
@@ -91,11 +94,42 @@ lt.extend = lt.prototype.extend = function(){
 }
 
 lt.prototype.extend({
-	constructor: lt,
+	find(d) {
+		var m = 0, dom;
+		this.each((item, index)=>{
+			dom = item.querySelectorAll(d);
+			delete this[index];
+			dom.forEach((dom, i)=>{
+				this[m++] = dom;
+			})
+		});
+		this.length = m;
+		return this;
+	}
+})
+
+lt.prototype.extend({
+	// 遍历lt的DOM对象
+	each(fn){
+		for(var i = 0; i<this.length; i++) {
+			fn(this[i], i);
+		}
+	},
 	/*
 		JavaScript 事件名数组
 	 */
-	events: ['click', 'mouseleave', 'mouseenter', 'touchstart', 'touchmove', 'touchend'],
+	
+	addEvent(self){
+		// self => 原型对象
+		// this => 实例对象
+		var events = ['click', 'mouseleave', 'mouseenter', 'touchstart', 'touchmove', 'touchend'];
+		for(let key of events){
+				self[key] = cb => {
+					this.each(item=>item.addEventListener(key,cb));
+					return this;
+				}
+			}
+	},
 	/*
 		dom 加载完毕事件
 	 */
@@ -104,20 +138,15 @@ lt.prototype.extend({
 	},
 	init(a) {
 		// 判断是否是选择符
-		let l = new lt();
+		let l = new lt(), el;
 		if(a.match(/^[a-z|#|\.].+/)) {
 			this.selector = a.match(/^[a-z|#|\.].+/)[0];
-			this.el = document.querySelectorAll(this.selector);
+			this.el = el = document.querySelectorAll(this.selector);
+			
+			el.forEach((item,i) => l[i] = item);
+			l.length = el.length;
 			// 添加事件
-			for(let key of this.events){
-				this[key] = (cb)=>{
-					this.el.forEach(item=>item.addEventListener(key,cb))
-				}
-			}
-			for(let i = 0; i<this.el.length; i++) {
-				l[i] = this.el[i];
-			}
-			l.length = this.el.length;
+			l.addEvent(this);	
 		}
 		return l;
 	},
@@ -433,7 +462,6 @@ lt.prototype.extend({
 	    	}
 			// 自动播放
 	    	if(option.autoplay) this.autoplayTwo(option.time);
-			
 		}
 	},
 	/*
