@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+	<script type="text/javascript">
+		
+		 function selectSort(arr){
+		    for(var i = 0;i < arr.length - 1;i++){
+		        for(var j = i + 1;j < arr.length;j++){
+		            if(arr[i] > arr[j]){
+		                var t = arr[i];
+		                arr[i] = arr[j];
+		                arr[j] = t;
+		            }
+		        }
+		    }
+		    return arr;
+		}
+		var arr = selectSort([1,3,2,5,1,3]);
+		console.log(arr);
+	</script>
+</body>
+</html>
