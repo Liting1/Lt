@@ -3,7 +3,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     mode: 'production',
     entry: { // webpack 入口配置
-        app: './lbt.js'
+        app: './src/lbt.js'
     },
     module: { // loader 配置
         rules: [{
