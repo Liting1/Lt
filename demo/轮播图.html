@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>轮播图</title>
-	<script src="../lbt.js"></script>
+	<script src="../src/lbt.js"></script>
 	<style>
 		* {
 			margin: 0;
@@ -13,6 +13,14 @@
 			width: 400px;
 			height: 300px;
 			margin-bottom: 20px;
+		}
+		#lbt .btn-box .btn-left { /* 更改左按钮样式class名 */
+			color: #fff;
+			border-radius: 0 10px 10px 0;
+		}
+		#lbt .btn-box .btn-right { /* 更改右按钮样式class名 */
+			color: #fff;
+			border-radius: 10px 0 0 10px;
 		}
 		#lbt2 {
 			width: 400px;
@@ -40,11 +48,11 @@
 					url: 'http://wwww.taobao.com'
 				}]
 			},
-			autoplay: false
+			autoplay: false // 是否自动播放 默认值为 true
 		});
 
 		lt('#lbt2').lbt({
-			animate: 2,
+			animate: 2, // 播放的方式 取值 1 或 2 默认值是 1
 			html: {
 				items: [{
 					img: './images/lbt1.jpg',

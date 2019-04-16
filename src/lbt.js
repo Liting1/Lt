@@ -151,21 +151,6 @@ lt.prototype.extend({
 		return l;
 	},
 	/*
-		简单的对象深合并
-	*/
-	merge(oldOption, newOption) {
-		for(var item in newOption) {
-			if(typeof newOption[item] === 'object') {
-				if(!oldOption[item] && oldOption.constructor == Array) {
-					oldOption[item] = {};
-				}
-				this.merge(oldOption[item], newOption[item]);
-			} else {
-				oldOption[item] = newOption[item]
-			}
-		}
-	},
-	/*
 		渲染CSS样式
 	*/
 	_isStyle(str) {
@@ -230,6 +215,10 @@ lt.prototype.extend({
 	        }
 	        ${selector} .btn-box button {
 	        	position: absolute;
+	        	border: none;
+	        	outline: none;
+	        	color: rgba(0,0,0,0.7);
+	        	cursor: pointer;
 	        	top: 50%;
 	        	transform: translateY(-50%);
 	        	z-index: 2;
@@ -408,7 +397,7 @@ lt.prototype.extend({
 		// 只能是一个元素
 		this.el = this.el[0];
 		// 合并配置对象
-		this.merge(this.option, o);
+		this.option = lt.extend(this.option, o);
 		// 初始化
 		var { el, option, roundList} = this,
     	items = option.html.items;
@@ -732,7 +721,7 @@ lt.extend({
 	},
 	isStr(str) {
 		return toString.call(str) === '[object String]';
-	}
+	},
 })
 
 lt.extend({
@@ -783,6 +772,45 @@ lt.extend({
 			obj[arr[i].split('=')[0]] = arr[i].split('=')[1];
 		}
 		return obj;
+	},
+	/*
+		方法作用：两个对象的合并，并且返回一个新的合并之后的对象
+		参数说明：
+			第一个参数是旧的对象，
+			第二个参数是新的对象
+		返回值：
+			返回一个合并之后的新对象
+	*/
+	merge(oldObj, newObj) {
+		// 深拷贝对象
+		oldObj = JSON.parse(JSON.stringify(oldObj));
+		// 遍历对象的每一个属性
+		for(var key in newObj) {
+			// 如果这个属性的属性值是数组或者对象
+			if(typeof newObj[key] === 'object' && newObj[key] !== null) {
+				var type = toString.call(newObj[key]);
+				// 是数组
+				if(type == '[object Array]') {
+					// 如果旧对象不存在该属性值
+					if(!oldObj[key]) {
+						oldObj[key] = merge([], newObj[key]);
+					} else {
+						oldObj[key] = merge(oldObj[key], newObj[key]);
+					}
+				}
+				// 是对象
+				if(type == '[object Object]') {
+					if(!oldObj[key]) {
+						oldObj[key] = merge({}, newObj[key]);
+					} else {
+						oldObj[key] = merge(oldObj[key], newObj[key]);
+					}
+				}
+			} else {
+				oldObj[key] = newObj[key]
+			}
+		}
+		return oldObj;
 	},
 	/*
 		方法作用说明：获取元素样式的值
@@ -883,7 +911,6 @@ lt.extend({
 		返回值说明：
 			返回深拷贝后的对象
 	*/
-
 	copyObject(obj) {
 		var str = JSON.stringify(obj);
 		return JSON.parse(str);
