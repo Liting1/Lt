@@ -773,14 +773,12 @@ lt.extend({
 		}
 		return obj;
 	},
-	/*
-		方法作用：两个对象的合并，并且返回一个新的合并之后的对象
-		参数说明：
-			第一个参数是旧的对象，
-			第二个参数是新的对象
-		返回值：
-			返回一个合并之后的新对象
-	*/
+	/**
+	 * [merge 两个对象的合并，并且返回一个新的合并之后的对象]
+	 * @param  {[object]} oldObj [第一个参数是旧的对象]
+	 * @param  {[object]} newObj [第二个参数是新的对象]
+	 * @return {[object]}        [返回一个合并之后的新对象]
+	 */
 	merge(oldObj, newObj) {
 		// 深拷贝对象
 		oldObj = JSON.parse(JSON.stringify(oldObj));
