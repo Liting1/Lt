@@ -339,7 +339,7 @@ lt.prototype.extend({
 			}
 		}
 	},
-	/*
+    /*
 		设置轮播图的切换方式
 	*/
 	qie(x){
@@ -661,12 +661,24 @@ lt.prototype.extend({
 			ul.style.marginLeft =  `-${80*i}px`;
 		}
 	},
+	getOffset(d) {
+        var x = 0, y = 0;
+        for(var i = 0; ;i++) {
+            if(getComputedStyle(d.parentNode)['position'] !== 'static') {
+                x += d.parentNode.offsetLeft;
+                y += d.parentNode.offsetTop;
+                d = d.parentNode;
+            } else {
+                return {x, y};
+            }
+        }
+    },
 	magnify(o){
 		this.el = this.el[0]; // 只能是一个元素
-		this.merge(this.magnifyOption, o);
+		this.magnifyOption = lt.extend(this.magnifyOption, o);
 		this.magnifyCss();
 		this.magnifyDom();
-		var {el, magnifyOption} = this,
+		var {el, magnifyOption, getOffset} = this,
 			minBox = el.querySelector('.min-box'), // 装小图片的盒子
 			maxBox = el.querySelector('.max-box'), // 装大图片的盒子
 			maxImg = el.querySelector('.max-box img'), // 大图片
@@ -692,9 +704,11 @@ lt.prototype.extend({
 			maxBox.style.display = 'none';
 			mask.style.display = 'none';
 		}
+		console.log(this);
 		minBox.onmousemove = function(e){
-			moveY = e.pageY-this.offsetTop - mask.offsetHeight/2;
-			moveX = e.pageX-this.offsetLeft - mask.offsetWidth/2;
+
+			moveY = e.pageY - getOffset(this).x - mask.offsetHeight/2;
+			moveX = e.pageX - getOffset(this).y - mask.offsetWidth/2;
 			if(moveX <= 0) moveX = 0;
 			if(moveY <= 0) moveY = 0;
 			if(moveX >= maxX) moveX = maxX;
@@ -773,14 +787,12 @@ lt.extend({
 		}
 		return obj;
 	},
-	/*
-		方法作用：两个对象的合并，并且返回一个新的合并之后的对象
-		参数说明：
-			第一个参数是旧的对象，
-			第二个参数是新的对象
-		返回值：
-			返回一个合并之后的新对象
-	*/
+	/**
+	 * [merge 两个对象的合并，并且返回一个新的合并之后的对象]
+	 * @param  {[object]} oldObj [第一个参数是旧的对象]
+	 * @param  {[object]} newObj [第二个参数是新的对象]
+	 * @return {[object]}        [返回一个合并之后的新对象]
+	 */
 	merge(oldObj, newObj) {
 		// 深拷贝对象
 		oldObj = JSON.parse(JSON.stringify(oldObj));
