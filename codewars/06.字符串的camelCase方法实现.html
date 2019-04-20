@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    String.prototype.camelCase = function() {
+        return (' '+this).toLowerCase().replace(/[ ][a-z]/g, match=> match.trim().toUpperCase()).trim();
+    }
+    var a = "Hello case abc".camelCase()
+    console.log(a);
+    // "camel case word".camelCase()
+    </script>
+</body>
+
+</html>

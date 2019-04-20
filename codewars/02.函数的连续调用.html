@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<p>我们想要创建一个函数，在连续调用时将数字加在一起。</p>
+	<pre>
+		add(1)(2);
+		// returns 3
+	</pre>
+	<p>我们还希望能够继续为我们的连锁店添加数字。</p>
+	<pre>
+		add(1)(2)(3); // 6
+		add(1)(2)(3)(4); // 10
+		add(1)(2)(3)(4)(5); // 15
+	</pre>
+	<p>单个调用应该返回传入的数字。</p>
+	<pre>
+		add(1); // 1
+	</pre>
+	<p>我们应该能够存储返回的值并重用它们。</p>
+	<pre>
+		var addTwo = add(2);
+		addTwo; // 2
+		addTwo + 5; // 7
+		addTwo(3); // 5
+		addTwo(3)(5); // 10
+	</pre>
+	<script>
+		function add(n,sum = 0){
+			
+			sum +=n;
+			// 随时都是最后一次
+			function temp(m){
+				return add(m, sum);
+			}
+			temp.toString = function(){
+				return sum;
+			}
+			return temp;
+		}
+		var a = add(1)(2)(3);
+		console.log(a);
+	</script>
+</body>
+	
+
+</html>

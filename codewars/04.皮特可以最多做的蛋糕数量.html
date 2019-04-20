@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<p>皮特喜欢烤一些蛋糕。他有一些食谱和配料。不幸的是，他在数学上并不擅长。你可以帮他找出，考虑到他的食谱，他可以烘烤多少蛋糕？
+
+编写一个函数cakes()，它接受配方（对象）和可用成分（也是一个对象）并返回Pete可以烘焙的最大蛋糕数（整数）。为简单起见，没有单位的数量（例如1磅面粉或200克糖只是1或200）。对象中不存在的成分可以视为0。
+
+例子：</p>
+<pre>
+	// must return 2
+	cakes({flour: 500, sugar: 200, eggs: 1}, {flour: 1200, sugar: 1200, eggs: 5, milk: 200}); 
+	// must return 0
+	cakes({apples: 3, flour: 300, sugar: 150, milk: 100, oil: 100}, {sugar: 500, flour: 2000, milk: 2000}); 
+</pre>
+<script>
+	function cakes(recipe, available) {
+		var arr = [];
+		for(var key in recipe) {
+			if(recipe[key]) {
+				if(!available[key] || available[key]/recipe[key] < 1) return 0;
+				arr.push(Math.floor(available[key]/recipe[key]));
+			}
+		}
+		return Math.min.apply(null,arr);
+	}
+	var a = cakes({flour: 500, sugar: 200, eggs: 1}, {flour: 1200, sugar: 1200, eggs: 5, milk: 200}); 
+	console.log(a);
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<p>如果我们列出10以下的所有自然数是3或5的倍数，我们得到3,5,6和9.这些倍数的总和是23。完成解决方案，使其返回传入数字下方所有3或5的倍数之和。</p>
+	<p>注意：如果号码的既是3的倍数也是5的倍数，只计算它一次。</p>
+	<script>
+
+		function solution(number){
+			var sum = 0;
+			
+			for(var i = 1; i< number; i++) {
+				if(i % 3 == 0 || i % 5 == 0){
+					sum += i;
+				}
+			}
+			return sum;
+		}
+
+		console.log(solution(10));
+	</script>
+</body>
+</html>
