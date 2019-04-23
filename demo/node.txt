@@ -1,0 +1,147 @@
+nodejs 模块加载顺序
+
+一、当引入模块的形式是 require('lt') 时
+(1)、先找当前文件夹下的node_modules文件夹下的lt文件夹下的package.json 文件指定的main字段文件路径。
+## 如果第一种情况没有找到
+(2)、找当前文件夹下的node_modules文件夹下的lt.js 文件
+## 如果第二种情况没有找到
+(3)、找当前文件夹下的node_modules文件夹下的lt文件夹下的index.js 文件
+## 如果第三种情况没有找到
+(4)、找的上一级node_modules文件夹，查找顺序与上面一样。
+## 最后需要注意的就是
+(5)、如果引入模块的自定义模块名字与nodejs内置模块名相同，那么会先找内置模块
+
+二、内置对象 Buffer的属性及方法
+1、Buffer 对象无需require()引入模块可以直接使用
+2、创建Buffer 对象的方式
+	(1). new Buffer(size) 参数为一个数字，创建一个指定大小的Buffer对象
+	(2). new Buffer(str, [encoding]) 参数为一个字符串,第二个参数为字符编码
+	(3). new Buffer(array) 参数为一个数组, 用数组初始化一个缓存区
+2、Buffer.fill(value, [offset], [end]) 初始化缓存中的所有的内容
+3、Buffer.slice(start,end) 截取buffer对象，并没有生成新的buffer对象
+4、Buffer.toString([encoding], [start], [end]) 将buffer对象转换为字符串，参数为指定字符编码与开始和结束位置
+5、Buffer.write(string, [offset], [length], [encoding]) 写入buffer
+6、Buffer对象转换为字符串 JSON.stringify()
+7、Buffer.copy(targetBuffer, [targetStart], [sourceStart], [sourceEnd]) 把一个buffer对象复制到另一个buffer对象里[(a.copy(b)) 复制a到b里面]
+8、Buffer.isBuffer(obj) 判断一个对象是否为一个buffer对象
+9、Buffer.length 返回buffer对象的字节长度
+10、Buffer.concat(list, [totallength]) 合并buffer对象返回一个新的buffer对象
+11、Buffer.isEncoding(encoding) 检测一个字符串是否为有效的编码格式字符串
+
+三、fs模块操作文件系统
+1、fs.readFile(filename, [options], callback) 异步的读取整个文件，参数分别为 (文件路径, 读取文件时使用的选项, 回调函数->参数[err,data]), 如果读取的文件不存在就会抛出异常
+2、fs.readFileSync(filename, [options]) 同步的读取文件, 返回读取后的数据
+	(1)、参数 option 对象的值
+	var options = {
+		// flag-指定文件的操作模式
+		flag: 'r'(读取文件)
+			'r+'(读取并写入文件,文件不存在则抛出异常)
+			'rs'(以同步的方式读取文件并通知操作系统忽略本地文件系统缓存)
+			'w'(写入文件,如果文件不存在则创建该文件，如果文件存在则清空文件内容)
+			'wx'(以排他的方式写入文件)
+			'w+'(读取并写入文件,如果文件不存在则创建该文件,如果文件已存在则清空文件内容)
+			'wx+'(以排他方式打开文件)
+			'a'(追加写入文件,如果文件不存在则创建该文件)
+			'ax'(以排他方式写入文件)
+			'a+'(读取并追加写入文件，如果文件不存在则创建该文件)
+			'ax+'(以排他方式打开文件)
+			// 设置读取文件的编码格式
+		encoding: 'utf8' / 'ascii' / 'base64'
+		// 文件被打开时对文件的读写权限, 默认是0666(可读写)
+		// 1: 执行权限 2: 写权限 4: 读权限
+		mode: 0666 (默认值)
+	}
+3、fs.writeFile(filename, data, [options], callback) 写入文件 参数(文件路径,需要写入的内容,配置对象,回调函数 ->参数[err])
+4、fs.writeFileSync(filename, data, [option]) 使用同步的方式写入文件
+5、fs.appendFile(filename, data, [option], callback) 在一个字符串或一个缓存区中的数据追加到一个文件底部 (文件名,需要写入的内容,配置对象{flag:'a'}默认值, 回调函数 ->参数[err])
+5、fs.appendFileSync(filename, data, [option]) 同步追加数据
+6、fs.open(filename, flags, [mode], callback) 从指定的位置开始读写文件的处理 参数(文件路径, 文件操作模式, [文件权限], 回调函数 ->参数[err错误对象,fd文件句柄])
+7、fs.openSync(filename, flags, [mode]) 同步方式读写文件
+8、fs.read(fd, buffer, offset, length, position, callback) 从文件的指定位置处读取文件, 一直读取到底部 参数(open方法回调函数返回的文件描述符, 文件需要读取到的缓存区, 指定向缓存区中写入数据的开始位置, 读取文件时的开始位置, 回调函数 ->参数[err错误对象, bytesRead实际读取的字节数, buffer被读取的缓存区对象] )
+9、fs.readSync(fd, buffer, offer, length, position) 以同步的方式打开文件
+10、fs.write(fd, buffer, length, position, callback) 从缓存区读取数据并且从文件的指定处开始写入这些数据 参数(文件描述符, 指定读取的缓存区, 读取数据的开始位置, 读取长度, 写入文时的开始位置, 回调函数->参数[err错误对象, written写入的字节数, buffer被读取的缓存区对象])
+11、fs.writeSync(fd, buffer, offset, length) 同步读取文件
+12、fs.close(fd, [callback]) 关闭文件
+13、fs.closeSync(fd, [callback]) 同步的关闭文件
+
+14、fs.mkdir(path, [mode], callback) 创建目录 参数(被创建的文件路径及名字, 目录权限, 回调函数->[err错误对象]);
+15、fs.mkdirSync(path, [mode]) 创建目录 同步方式
+16、fs.readdir(path, callback) 读取目录 参数(目录的完整路径, 回调函数->参数[err, files所有文件名数组])
+17、fs.readdirSync(path) 同步读取文件目录
+
+18、fs.stat(path, callback) 查看文件或目录的信息 参数->(err, stats)
+	或者fs.lstat(path, callback) 查看文件或目录的信息 参数->(err, stats)
+	与其对应的同步方法为 fs.statSync(path)/ fs.lstatSync(path) // 返回一个文件描述符对象
+	回调函数stats的一些方法
+	stats.isFile() 用于判断被查看的对象是否为一个文件, 返回一个Boolean值
+	stats.isDirectory() 用于判断被查看的对象是否为一个目录, 返回一个Boolean值
+	stats.isBlockDevice() 用于判断被查看的文件是否为一个块设备文件 返回一个Boolean值 (仅UNIX操作系统有效)
+	stats.isCharacterDevice() 用于判断被查看的文件是否为一个字符设备文件, 返回一个Boolean值 (仅UNIX操作系统有效)
+	stats.isSymbolicLink() 用于判断被查看的文件是否为一个符号链接文件，如果是的话返回true，如果不是返回false，该方法仅在lstat方法的回调函数中有效
+	stats.isFIFO() 用于判断被查看的文件是否为一个FIFO文件，如果是的话则返回true，如果不是返回false(仅UNIX操作系统有效)
+	stats.isSocket() 用于判断被查看的文件是否为一个socket文件,如果是的话返回true，如果不是返回false (仅UNIX操作系统下有效)
+	回调函数stats的一些属性
+	stats.dev 该属性值为文件或目录所在设备ID (仅UNIX操作系统下有效)
+	stats.ino 该属性值为文件或目录的索引编号 (仅UNIX操作系统下有效)
+	stats.mode 该属性值为使用数值形式代表的文件或目录的权限标志
+	stats.nlink 该属性值为文件或目录的硬连接数量
+	stats.uid 该属性值为文件或目录的所用者的用户ID (仅在UNIX操作系统下有效)
+	stats.gid 该属性值为文字或目录的所有者的组ID (仅UNIX操作系统下有效)
+	stats.size 该属性值为文件尺寸(即文件中的字节数)
+	stats.atime 该属性值为文件的访问时间
+	stats.mtime 该属性值为文件的修改时间
+	stats.ctime 该属性值为文件的创建时间
+19、fs.exists(path,callback) 该方法用于检查一个文件或目录是否存在 参数(目录路径, 回调函数->参数[exists] 文件或目录存在时为true反之为false)
+20、fs.realpath(path,[cache],callback) 获取一个文件的或目录的绝对路径 参数(目录路径, 可选参数, 回调函数->参数[err,resolvedPath文件的绝对路径])
+21、fs.realpathSync(path,[cache]) 同步的方式获取文件或目录的绝对路径 参数(路径,可选参数对象)
+22、fs.utimes(path,atime,mtime,callback) 修改文件的访问时间及修改时间 参数(路径, 修改后的访问时间,修改后的修改时间, 回调函数 参数->[err])
+23、fs.utimesSync(path, atime, mtime) 同步方法
+24、fs.futimes(fd,atime,mtime,callback) 在文件使用fs.open()方法打开文件时使用文件描述符修改文件的访问时间或修改时间 参数(文件描述符, 修改后的访问时间, 修改后的修改时间, 回调函数)
+25、fs.futimesSync(fd, atime, mtime) 同步方法
+26、fs.chmod(path,mode,callback) 修改文件或目录的读写权限 参数(路径, 修改后文件或目录的读写权限, 回调函数)
+	常用mode 值 0660 代表所有者可读写, 其他人没有任何权限
+	0644 代表所有者可读写, 其他人只读
+	0755 代表所有者有所有权限, 其他所有人可读和执行
+	0740 代表所有者有所有权限, 所有者所在的组只读
+27、fs.chomdSync(path, mode) 同步方法
+28、fs.fchmod(fd, mode, callback) 使用文件描述符修改文件的读写权限
+29、fs.fchmodSync(fd, mode) 同步方法
+30、fs.rename(oldpath,newpath,callback) 移动文件或目录, 当移动后的路径与原路径为同一路径，而移动的文件或目录名与源文件名或目录名不同时则执行文件或目录的重命名 参数(移动前的路径, 移动后的路径, 回调函数->参数[err])
+31、fs.link(srcpath, dstpath, callback) 创建文件的硬链接, 参数(需要被指定创建硬链接的文件路径及完整名字, 创建硬链接的路径及完整名字, 回调函数->参数[err])
+32、fs.linkSync(srcpath, dstpath) 同步方法
+
+33、fs.unlink(path, callback) 删除文件的硬链接(可以用来删除文件), 参数(需要删除硬链接完整路径及文件名, 回调函数->参数[err])
+34、fs.unlinkSync(path) 同步方法
+
+35、fs.symlink(srcpath, dstpath, [type], callback) 创建文件或文件夹的符号链接(其实就是创建快捷方式), 参数(需要被创建符号链接的文件或文件夹, 创建文件或文件夹的的名字, 可选参数(file表示时文件,dir表示时目录), 回调函数->[err])
+36、fs.symlinkSync(srcpath, dstpath, [type]) 同步方法
+37、fs.readlink(path,callback) 读取符号链接中的文件或目录, 参数(符号路径, 回调函数->[err, linkString])
+38、fs.truncate(filename,len,callback) 文件的截断, 参数(需要截断的文件名及完整路径, 截断后的文件长度, 回调函数->[err])
+39、fs.truncateSync(filename,len) 同步方法
+
+40、fs.ftruncate(fd,len,callback) 当使用open或openSync方法打开文件时使用文件的描述符进行文件的截断, 参数(文件的描述符, 截断后的文件的长度, 回调函数->[err])
+41、fs.ftruncateSync(fd,len) 同步方法
+42、fs.rmdir(path, callback) 删除空目录, 参数(目录路径, 回调函数->[err])
+43、fs.rmdirSync(path) 同步方法
+44、fs.watchFile(filename, [option], listener) 监视文件或目录 参数(需要监视的文件或文件夹, 配置对象{interval: num(表示每隔多少时间查看一次),persistent: bool(表示是否执行完程序就结束监听)}, 文件改动后出发的函数->[curr改动之前的文件状态信息对象(stats), prev改动之后的文件状态信息对象(stats)])
+45、fs.unwatchFile(filename, [listener]) 取消监视文件需要执行的函数, 参数(监视的文件名, 监视文件的执行函数)
+46、fs.watch(filename, [option], [listener]) 监视文件或文件夹, 参数(文件名或文件夹,配置对象, 监听函数->[event, filename]) close() 关闭监听
+
+
+47、fs.createReadStream(path, [option]) 以流的形式读取文件
+	参数(需要读取文件的完整路径及文件名, 配置对象)
+	option: {
+		flags: 用于指定对改文件采取什么操作,默认值为('r'),
+		encoding: 指定使用什么格式编码格式来读取文件,(默认值为null),
+		autoClose: 用于指定是否关闭在读取文件时操作系统内部使用的文件描述符,如果为false则文件读取过程中发生错误或者读取完成也不会关闭,如果为true则相反会关闭读取,默认值为(true),
+		start: 使用整数来指定文件的开始读取位置(单位字节数),
+		end: 使用整数来指定文件的结束读取位置(单位字节数)
+	}
+	以流形式读取文件所触发的事件
+	open: 开始读取文件
+	data: 读取到的数据
+	end: 文件读取完毕
+	error: 文件读取错误
+	close: 文件被概关闭
+
+48、fs.createWriteStream(path,[option]) 以流的形式写入文件
