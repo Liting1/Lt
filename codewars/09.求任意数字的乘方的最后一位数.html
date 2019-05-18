@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    /*lastDigit("4", "1") // returns 4
+	lastDigit("4", "2") // returns 6
+	lastDigit("9", "7") // returns 9    
+	lastDigit("10", "10000000000") // returns 0*/
+
+
+
+    function lastDigit(a, b) {
+        if (!+b) return 1;
+        var a = a[a.length - 1];
+        var arr = [+a]; // 第一次相乘的尾数
+        for (var i = 0; i <= 9; i++) {
+            if (a * arr[i] % 10 == arr[0]) {
+                break;
+            } else {
+                arr.push(a * arr[i] % 10);
+            }
+        }
+        var temp = b[0];
+        for (var j = 1; j < b.length; j++) {
+            temp = temp % arr.length + b[j];
+
+        }
+        return temp % arr.length ? temp % arr.length - 1 : arr.length - 1;
+
+        }
+        var a = lastDigit("3", "1");
+        console.log(a);
+        // console.log('2037035976334486086268445688409378161051468393665936250636140449354381299763336706183397376'%6)
+        // lastDigit("10", "10000000000")
+
+
+        // var lastDigit = function(str1, str2) {
+        	// 第一：因为所有个位数的乘方最多只有 4种情况
+        	// 那么只需要知道 乘方除以4的余数的多少 来判断需要乘方多少次
+        	// 由于被4整除的时候表示最后一位所有当余数为0时需要设置为4
+        	// 进行乘方计算再获取个位数
+            // return +!+str2 || Math.pow(str1.slice(-1) % 10, str2.slice(-2) % 4 || 4) % 10
+        // }
+    </script>
+</body>
+
+</html>

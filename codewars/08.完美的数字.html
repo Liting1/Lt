@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    // Test.describe("perfect powers", function() {
+    //     Test.it("should work for some examples", function() {
+    //         Test.assertSimilar(isPP(4), [2, 2], "4 = 2^2");
+    //         Test.assertSimilar(isPP(9), [3, 2], "9 = 3^2");
+    //         Test.assertEquals(isPP(5), null, "5 isn't a perfect number");
+    //     });
+    // });
+
+    function isPP(n){
+    	for(var i = 2; i<=n/2; i++){
+    		if(n%i == 0) {
+    			var ok = getNum(i);
+    			if(ok) {
+    				return[i, ok];
+    			}
+    		}
+    	}
+
+    	function getNum(m){
+    		var x = n;
+    		for(var i = 1;;i++){
+    			x = x/m;
+    			if(x == 1) {
+    				return i;
+    			}
+    			if(String(x).indexOf('.') > 0) {
+    				return false;
+    			}
+    		}
+    	}
+    	return null;
+    }
+/*
+function isPP(n) {
+  for (var m = 2; m * m <= n; ++ m)
+    for (var k = 2; Math.pow(m, k) <= n; ++ k)
+      if (Math.pow(m, k) == n) return [m, k];
+  return null;
+}*/
+    console.log(isPP(81));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+	var arr = [24, 16, 4];
+	// 找出数组中的最大值, 和第二大的值
+	// 直接将数组从小到大排序取最后两位相减
+	/*for(var i = 0; i< 50; i++) {
+		arr.push(parseInt(Math.random()*100));
+	}
+	console.log(arr)
+	console.time('start');
+		var a = solution(arr);
+		console.log(a);	
+	function solution(arr) {
+		if(arr.length == 1) return +arr;
+	  	var brr = arr.sort((a,b)=>b-a); // 对数组排序 // [24, 16, 4] -> [16, 8, 4] -> [8, 8, 4] -> [8, 4, 4] -> [4,4,4]
+			if(brr[0]==brr[1]) { // 8 == 8;
+	  		// 将数组取重
+	  		var crr = Array.from(new Set(brr)); // [8,4];
+	  			if(crr.length == 1) { // 表示完成
+	  				return arr.reduce((prev, current)=> prev+ current);
+					// return arr.length * crr; // 2.4ms
+	  			} else { // [4, 8, 4]
+	  				brr[0] = crr[0]-crr[1];
+	  			}
+			}else {
+				brr[0] = brr[0]-brr[1]; // [8, 16, 4] -> [8, 8, 4]-> [4,4,4]
+			}
+			return solution(brr); // [4, 8, 4] -> [4,4,4]
+	}
+	console.timeEnd('start');*/
+	// var arr = [];
+	// for(var i = 0; i< 100; i++) {
+	// 	arr.push(parseInt(Math.random()*1000000)+1);
+	// }
+	// console.log(arr)
+	console.log(solution([ 3, 13, 23, 7, 83 ]));
+	function solution(arr) {
+		if(arr.length == 1) return +arr;
+		var len = arr.length;
+		var brr = [...arr]
+		for(var m = 0; ; m++){
+		  	brr = brr.sort((a,b)=>b-a); 
+				if(brr[0]==brr[1]) { 
+		  		brr = Array.from(new Set(brr)); 
+		  			if(brr.length == 1) { // 表示完成
+						return len * brr; // 2.4ms
+		  			}
+				}
+			brr[0] = brr[0]-brr[1]; 
+		}
+	}
+
+
+/* 其中一种的答案
+	const gcd = (a,b)=>a?gcd(b%a,a):b
+	function solution(numbers) {
+	  return numbers.reduce(gcd)*numbers.length
+	}
+*/
+		</script>
+</body>
+</html>
