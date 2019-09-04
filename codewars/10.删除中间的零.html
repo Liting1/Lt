@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    // 不能使用任何数组的方法以及对象的方法
+    var arr = [1, null, '5', '0', '2', 0, 8, 6, null, false]
+    console.log(arr.length);
+
+    function removeZeros(array) {
+        console.log(array);
+        var arr = [],
+            n = 0,
+            m = 0;
+        arr.length = array.length;
+        for (var g = 0; g < array.length; g++)
+            if (array[g] !== 0 && array[g] !== '0') m++;
+        console.log(m);
+        for (var i = 0; i < array.length; i++) {
+            array[i] === 0 || array[i] === '0' ? arr[m++] = array[i] : arr[n++] = array[i];
+        }
+        return arr;
+    }
+    var a = removeZeros(arr);
+    console.log(a);
+
+    /*function removeZeros(array) {
+        const head = []
+        const tail = []
+        for (const e of array) {
+            if (e === 0 || e === "0") {
+                tail[tail.length] = e
+            } else {
+                head[head.length] = e
+            }
+        }
+        return [...head, ...tail]
+    }*/
+    </script>
+</body>
+
+</html>

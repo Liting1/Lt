@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let arr = [
+            ["I","L","A","W"],
+            ["B","N","G","E"],
+            ["I","U","A","O"],
+            ["A","S","R","L"]
+        ];
+        
+        boggle(arr, "BINGO");
+
+        function boggle(arr, str){
+        	let x = 0; // 水平坐标
+        	let y = 0; // 垂直坐标
+
+        	for(let i = 0,len = str.length; i < len; i++){
+        		// console.log(str[i]);
+        	}
+
+        	function trave(brr, m){ // 遍历数组 arr 搜寻首字母
+        		
+        		let coordinates = []; // 用于存储满足条件的字母坐标
+
+        		for(let i = 0, len = brr.length; i < len; i++){
+        			for(let j = 0, len2 = brr[i].length; j < len2; j++){
+        				if(brr[i][j] === m){ // 当搜寻的字母与传入的字母一样时保存坐标
+        					coordinates.push([i,j]);
+        				}
+        			}
+        		}
+        		return coordinates;
+        	}
+
+
+        	function getAllRound(cod){
+        		let a = cod[0],b = cod[1];
+        		
+        		let all = [ // 所有的八个方位坐标
+	        		[a, b+1],
+	        		[a, b-1],
+	        		[a+1, b],
+	        		[a+1, b+1],
+	        		[a+1, b-1],
+	        		[a-1, b-1],
+	        		[a-1, b+1],
+	        		[a-1, b]
+	        	];
+	        	let allCopy = all.filter(item=>{ // 过滤出不满足条件的元素
+	        		return (item[0] >= 0 && item[0] <= arr.length-1 && item[1] >= 0 && item[1] <= arr[0].length-1)
+        		})
+	        	return allCopy;
+        	}
+
+            function search() {
+                let first = trave(arr, str[0]); // 查找首字母满足条件的元素
+                let s = getAllRound(first[0]) // 查找所有满足条件的周围元素
+                // 查找是否符合条件
+                for(let i = 0; i<s.length; i++){
+                    // console.log(arr[s[i][0]][s[i][0]], str[1])
+                    if(arr[s[i][0]][s[i][0]] == str[1]){
+                        console.log(s[i]);
+                    }
+                }
+                console.log(s);
+
+            }
+
+            search()
+
+
+
+
+
+
+            // console.log(arr[2][2]); // 参考元素 即可能是中间位置 		[ A ]
+            
+            // console.log(arr[3][2]); // 相对参考元素的下方元素 x++, y  [ R ]
+            // console.log(arr[1][2]); // 相对参考元素的上方元素 x--, y 	[ G ]
+            // console.log(arr[2][1]); // 相对参考元素的左方元素 x, y--	[ U ]
+            // console.log(arr[2][3]); // 相对参考元素的左方元素 x, y--	[ O ]
+            // console.log('--------------------------------------------');
+            // console.log(arr[1][1]); // 相对参考元素的左-上方元素 x--, y--	[ N ]
+            // console.log(arr[1][3]); // 相对参考元素的右-上方元素 x--, y++	[ E ]
+            // console.log(arr[3][3]); // 相对参考元素的右-下方元素 x++, y++	[ L ]
+            // console.log(arr[3][1]); // 相对参考元素的左-下方元素 x++, y--	[ S ]
+
+        }
+        // a();
+        /* 
+            [
+                ["I","L","A","W"],
+                ["B","N","G","E"],
+                ["I","U","A","O"],
+                ["A","S","R","L"]
+            ]
+
+            有效猜测是可以通过连接相邻单元（水平，垂直或对角）而不重复使用任何先前使用的单元来形成的字符串。
+
+            例如，在上面的板“BINGO”，“LINGO”和“ILNBIA”都是有效的猜测，而“BUNGIE”，“BINS”和“SINUS”则不是。
+
+            你的函数应该有两个参数（一个二维数组和一个字符串）并返回true或false，具体取决于是否按照Boggle规则在数组中找到该字符串。
+
+            测试用例将提供各种数组和字符串大小（最大150x150的平方数组和最多150个大写字母的字符串）。只有当它是一个有效的猜测时，你不必检查字符串是否是真正的单词。
+        */
+    </script>
+</body>
+</html>

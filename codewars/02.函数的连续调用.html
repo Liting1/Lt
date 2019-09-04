@@ -29,8 +29,11 @@
 		addTwo(3)(5); // 10
 	</pre>
 	<script>
+
+		// const add = n => Object.assign(i => add(i + n), { valueOf: () => n })
+
+		
 		function add(n,sum = 0){
-			
 			sum +=n;
 			// 随时都是最后一次
 			function temp(m){

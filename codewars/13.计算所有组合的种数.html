@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>组合</title>
+</head>
+
+<body>
+    <script>
+    /*var countChange = function(money, coins) {
+        if (money < 0 || coins.length === 0)
+            return 0
+        else if (money === 0)
+            return 1
+        else
+            return countChange(money - coins[0], coins) + countChange(money, coins.slice(1))
+    }
+    countChange(10, [2,3,5])*/
+    /*function combination(s, arr) {
+        let min = Math.min.apply(null, arr);
+        let max = Math.max.apply(null, arr);
+        var len = ~~(s/min) - 1;
+        var brr = [];
+        let c = 0;
+        var str = '';
+        for (var n = 0; n < len; n++) {
+            str += `for(var i${n} = 0; i${n}<arr.length; i${n}++){`;
+            str += sum(n);
+        }
+        for (var m = 0; m < len; m++) {
+            str += '}';
+        }
+        function sum(n) {
+            var str = `var abc = [arr[i0]`;
+            for (var k = 1; k <= n; k++) {
+                str += `,arr[i${k}]`;
+            }
+            if (n <= (~~(s/max)-1)) {
+                return '';
+            } else {
+                return str + `]; abc.sort((a,b)=>a-b); 
+                    if(brr.indexOf(abc.join("")) == -1) {
+                        brr.push(abc.join(""));
+                        let sum = 0;
+                        for(var i = 0; i<abc.length; i++){
+                            sum+= abc[i];
+                        }
+                        if(sum == s) {
+                            c++;
+                         }
+                    };`;
+            }
+        }
+        eval(str);
+        if(s%min == 0) c++;
+        if(s%max == 0) c++;
+        return c;
+    }
+
+
+    // 0 + 5 = 5  x
+    // 5 + 2 = 7  x
+
+    var r = combination(10, [5, 2,3]);
+
+    console.log(r);*/
+    </script>
+</body>
+
+</html>

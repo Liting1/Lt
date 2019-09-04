@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <p>您必须创建一个带有正整数的函数，并返回由相同数字组成的下一个更大的数字：</p>
+    <pre>
+		12 ==> 21
+		513 ==> 531
+		2017 ==> 2071
+	</pre>
+    <p>
+        如果使用这些数字不能组成更大的数字，请返回-1：
+    </p>
+    <pre>
+		9 ==> -1
+		111 ==> -1
+		531 ==> -1
+	</pre>
+    <script>
+    function nextBigger(n) {
+        var arr = [...String(n)];
+        for (var i = arr.length - 1; i >= 0; i--) { // 反向遍历整个数组
+            if (arr[i] > arr[i - 1]) {
+                var brr = arr.splice(i).sort((a, b) => a - b);
+                for (var m = 0; m < brr.length; m++) {
+                    if (brr[m] > arr[i - 1]) {
+                        var temp = brr[m];
+                        brr[m] = arr[i - 1];
+                        arr[i - 1] = temp;
+                        break;
+                    }
+                }
+                arr = [...arr, ...brr];
+                break;
+            }
+        }
+        return +arr.join('') == n ? -1 : +arr.join('');
+    }
+
+    console.log(nextBigger(59884848459853))
+    /*const sortedDigits = n => { let arr = n.toString().split('');
+        arr.sort((a, b) => b - a); return arr; };
+
+    function nextBigger(n) {
+
+        let arr = sortedDigits(n);
+        let max = parseInt(arr.join(''), 10);
+
+        for (var i = n + 1; i <= max; i++) {
+            if (sortedDigits(i).every((x, j) => x === arr[j])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }*/
+    </script>
+</body>
+
+</html>

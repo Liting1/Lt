@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>abc</title>
+</head>
+<body>
+	<script>
+		console.time('a');
+		let arr = [];
+		function permutations(str){
+			let brr = [...str];
+			arr.push(brr.shift());
+
+			function per(brr){
+				// 截取数组的第一个元素
+
+				let arrCopy = [...arr]; // 复制数组
+				let first = brr.shift(); // 截取数组的第一个
+				arr = []; // 清空刚刚复制后的原始数组
+				for(let i = 0, len = arrCopy.length; i<len; i++){
+					for(let j = 0, len = arrCopy[i].length; j<len; j++){
+						let two = [...arrCopy[i]]; // 进行数组遍历
+						two.splice(j, 0, first); // 插空
+						arr.push(two.join(''));
+					}
+					let one = arrCopy[i] + first;
+					arr.push(one); // 特殊情况
+				}
+
+				if(!brr.length){
+					// console.log(arr)
+					return arr;
+				}
+				return per(brr);
+			}
+			return per(brr);
+		}
+		let ab = permutations('abcdefghij');
+		console.log(ab);
+		// let cd = Array.from(new Set(ab));
+		// console.log(cd);
+		console.timeEnd('a');
+		// abc, acb, bac, bca, cab, cba
+	</script>
+</body>
+</html>

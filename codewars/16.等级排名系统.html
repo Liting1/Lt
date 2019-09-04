@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<pre></pre>
+	<script>
+		class User {
+			constructor(){
+				this.rank = -8;
+				this.progress = 0;
+			}
+			incProgress(n){
+				if(n>8 || n <-8 || n == 0) throw Error('error');
+				let {rank} = this;
+				if(rank<0 && n>0) rank++;
+				if(rank>0 && n<0) rank--;
+				if(n-rank<=0){
+					if(n-rank == 0) this.progress +=3
+					if(n-rank == -1) this.progress +=1;
+				}else {
+					this.progress += Math.pow(n-rank,2)*10;
+				}
+				if(this.progress >= 100) {
+					var d = parseInt(this.progress / 100);
+					this.progress %= 100;
+					if(this.rank<0){ // 如果等级小于零
+						this.rank += d; 
+						if(this.rank>=0) { // 通过升级之后等级大于等于零 那么需要在原来的基础上+1
+							this.rank++;
+						}
+					} else { // 如果开始等级大于零
+						this.rank += d;
+					}
+				}
+				if(this.rank>=8) {
+					this.progress = 0;
+					this.rank = 8;
+				}
+			}
+		}
+
+		var user = new User();
+		user.rank = 8;
+		user.incProgress(9);
+
+		// console.log(user.rank);
+		console.log(user.progress);
+		// console.log(user.progress);
+		// user.incProgress(-5);
+		// console.log(user.progress);
+		// console.log(user.rank);
+	</script>
+</body>
+</html>
