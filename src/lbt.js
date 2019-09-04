@@ -690,7 +690,7 @@ lt.prototype.extend({
 			maximgY = 0, // 右侧大图片的最大Y方向位移
 			moveY = 0,
 			moveX = 0;
-		if(magnifyOption.imgList) this.magnifyList(el, maxImg, minImg);
+		if(magnifyOption.imgList) this.magnifyList(el, minImg, maxImg);
 		minBox.onmouseenter = function(){
 			maxBox.style.display = 'block';
 			mask.style.display = 'block';
@@ -779,8 +779,8 @@ lt.extend({
 			返回一个处理好的js对象
 	*/
 	toObject (str) {
-		str = str.split('?'),
-		arr = str[str.length-1].split('&'),
+		str = str.split('?');
+		var arr = str[str.length-1].split('&'),
 		obj = {};
 		for(var i = 0; i< arr.length; i++) {
 			obj[arr[i].split('=')[0]] = arr[i].split('=')[1];

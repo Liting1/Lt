@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<script src="../src/lbt.js"></script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		html, body {
+			height: 100%;
+			width: 100%;
+		}
+		ul li {
+			list-style: none;
+		}
+		a {
+			text-decoration: none;
+		}
+		.lbt {
+			width: 100%;
+			overflow: hidden;
+			height: 100%;
+		}
+		.lbt ul {
+			width: 500%;
+			height: 100%;
+		}
+		.lbt ul li {
+			width: 20%;
+			font-size: 100px;
+			text-align: center;
+			line-height: 100%;
+			float: left;
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div class="lbt">
+		<ul>
+			<li style="background: #ccc">1</li>
+			<li style="background: blue">2</li>
+			<li style="background: yellow">3</li>
+			<li style="background: green">4</li>
+			<li style="background: #ccc">1</li>
+		</ul>
+	</div>
+
+	<script>
+		(function(){
+			let ul = lt('.lbt ul')[0];
+			let startX, startY;
+			ul.addEventListener('touchstart', function(ev){
+				ev.stopPropagation();
+				ev.preventDefault();
+				startX = ev.touches[0].pageX;
+				startY = ev.touches[0].pageY;
+			});
+
+			ul.addEventListener('touchmove', function(ev){
+				console.log(ev.touches[0].pageX,ev.touches[0].pageY)
+			})
+
+		})();
+		// console.log(ul);
+	</script>
+</body>
+</html>
