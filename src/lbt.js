@@ -392,7 +392,6 @@ lt.prototype.extend({
 	/*
 		实现轮播函数
 	*/
-
 	lbt(o) {
 		// 只能是一个元素
 		this.el = this.el[0];
@@ -558,6 +557,13 @@ lt.prototype.extend({
 				width: 100%;
 				height: 100%;
 			}
+			${selector} .min-box .min-box-div{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
 			${selector} .max-box {
 				width: ${maxImg.width}px;
 				height: ${maxImg.height}px;
@@ -574,7 +580,6 @@ lt.prototype.extend({
 				left: 0;
 				top: 0;
 				position: absolute;
-				z-index: 2;
 			}
 			${selector} .img-list {
 				position: relative;
@@ -621,6 +626,7 @@ lt.prototype.extend({
 			<div class="min-box">
 				<img src="${minImg.url[0]}">
 				<div class="mask" style="display:none"></div>
+				<div class="min-box-div"></div>
 			</div>
 			<div class="max-box" style="display:none">
 				<img src="${maxImg.url[0]}">
@@ -704,11 +710,9 @@ lt.prototype.extend({
 			maxBox.style.display = 'none';
 			mask.style.display = 'none';
 		}
-		console.log(this);
 		minBox.onmousemove = function(e){
-
-			moveY = e.pageY - getOffset(this).x - mask.offsetHeight/2;
-			moveX = e.pageX - getOffset(this).y - mask.offsetWidth/2;
+			moveY = e.offsetY - mask.offsetHeight/2;
+			moveX = e.offsetX - mask.offsetWidth/2;
 			if(moveX <= 0) moveX = 0;
 			if(moveY <= 0) moveY = 0;
 			if(moveX >= maxX) moveX = maxX;
@@ -728,13 +732,13 @@ lt.prototype.extend({
 */
 lt.extend({
 	isObject(o) {
-		return toString.call(o) === '[object Object]';
+		return Object.prototype.toString.call(o) === '[object Object]';
 	},
 	isFn(fn) {
-		return toString.call(fn) === '[object Function]';
+		return Object.prototype.toString.call(fn) === '[object Function]';
 	},
 	isStr(str) {
-		return toString.call(str) === '[object String]';
+		return Object.prototype.toString.call(str) === '[object String]';
 	},
 })
 
@@ -751,7 +755,6 @@ lt.extend({
 		var r = '', n = len ? n : 4;
 		for(var i = 0; i < n; i++) 
 			r += String(Math.floor(Math.random()*10));
-		// parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
 		return r;
 	},
 	/*
@@ -964,7 +967,9 @@ lt.extend({
 	    xhr.onreadystatechange = function() {
 	        if(xhr.readyState == 4 && xhr.status == 200) {
 	            var data = xhr.responseText;
-	            option.callback(data);
+	            if(option.callback){
+	            	option.callback(data);
+	            }
 	        }
 	    }
 	},

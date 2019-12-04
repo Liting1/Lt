@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .box {
+        width: 200px;
+        height: 200px;
+        border: 1px solid #000;
+        margin-left: 10%;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="box"></div>
+    <script>
+    const pwChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()`~!@#$%^&*-+=|\\{}[]:;\"'<>,.?/".split("");
+
+    function login(pwd) {
+
+        if (pwd == 'abc') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function crack(login) {
+        const foundChars = [];
+        let done = false;
+        let charIndex = 0;
+
+        // while (!done) {
+            const pwStealer = new Proxy({}, {
+                get(target, prop) {
+                    console.log('name', target, prop);
+                    if (prop === 'length') return 0;
+
+                    if (foundChars[prop] === undefined) {
+                        foundChars[prop] = pwChars[0];
+                        charIndex = 0;
+                    }
+
+                    if (foundChars[prop]) return foundChars[prop];
+
+                    return undefined;
+                }
+            });
+            foundChars.pop(); // last character is always the incorrect one
+            charIndex++;
+            foundChars.push(pwChars[charIndex]);
+            console.log("---", foundChars);
+            done = login(pwStealer);
+        // }
+
+        return foundChars.join('');
+    }
+
+
+    let a = crack(login);
+    // console.log(a);
+    </script>
+</body>
+
+</html>

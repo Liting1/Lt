@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>The Millionth Fibonacci</title>
+</head>
+
+<body>
+    <script>
+    // function f(n){
+    // 	if(n<=1) return n;
+    // 	return f(n-1) + f(n-2);
+    // }
+    // f(0) = 0; f(1) = 1;
+
+    // 0+1 = 1;
+    // f(0)+f(1) = 1;
+    // f(2) = f(0)+f(1) = 1;
+    
+
+    // let x = f(50);
+    // console.log(x);
+    
+    // [0, 1, 1, 2, 3];
+
+    // n = 2000000;
+
+    // console.log(arr);
+    console.time('a');
+    let a = fib(1000000); // 0.68ms
+    console.log(a); // 11730.7
+    // 12586269025n
+    /* 
+	
+		fib(1) = fib(0) + fib(-1)
+	 	
+	 	fib(n) = fib(n + 2) - fib(n + 1)
+		
+		 fib(-1) = 1; 
+					fib(-2) = fib(0) - fib(-1); - 1
+
+					fib(-3) = fib(-1) - fib(-2); 1 + 1 = 2
+    */
+   
+    function fib(n) {
+        if (n == 1 || n == 0) return BigInt(n);
+        let arr = [0n, 1n], arr2 = [0n, 1n];
+
+        if (n < 0) {
+        	n = Math.abs(n);
+            for (let j = 0; j < n; j++) {
+                arr2.push(arr2[arr2.length - 2] - arr2[arr2.length - 1]);
+                arr2.shift();
+            }
+            return arr2[0]
+        } else {
+            for (let j = 0; j < n; j++) {
+                arr.push(arr[arr.length - 1] + arr[arr.length - 2]);
+                arr.shift();
+            }
+        	return arr[0];
+        }
+    }
+
+    console.timeEnd('a');
+
+
+    function minus(a, b) {
+        let res = '';
+        // 同时为负
+        if (a[0] === '-' && b[0] === '-') {
+            a = a.slice(1, a.length);
+            b = b.slice(1, b.length);
+            if (max(b, a) == 0) {
+                // b - a
+                res = zm(b, a);
+            } else if (max(b, a) == 1) {
+                // - (a-b)
+                res = '-'
+                res += zm(a, b);
+            } else {
+                res = "0";
+            }
+        }
+        // 第一个参数为负 第二个参数为正
+        if (a[0] === '-' && b[0] !== '-') {
+            res = '-';
+            res += add(a, b);
+        }
+
+        // 第一个参数为正 第二个参数为负
+        if (a[0] !== '-' && b[0] === '-') {
+            res = add(a, b);
+        }
+
+        // 第一个参数为正 第二个参数为正
+        if (a[0] !== '-' && b[0] !== '-') {
+            if (max(a, b) == 0) {
+                res = zm(a, b);
+            } else if (max(a, b) == 1) {
+                res = '-'
+                res += zm(b, a);
+            } else {
+                res = "0";
+            }
+        }
+        // console.log(res);
+        return res;
+    }
+    // 比较两个正数的大小
+    function max(a, b) {
+        // 0 表示a比较大，1表示b比较大
+        if (a.length > b.length) {
+            return 0;
+        } else if (a.length < b.length) {
+            return 1;
+        } else {
+            for (var i = 0; i < a.length; i++) {
+                if (a[i] > b[i]) {
+                    return 0;
+                } else if (a[i] < b[i]) {
+                    return 1;
+                }
+            }
+            return 2;
+        }
+    }
+    // 已经实现 一个大的正数减一个小的正数		
+    function zm(a, b) {
+        var res = '',
+            c = 0,
+            d = 0;
+        a = a.split('');
+        b = b.split('');
+        while (a.length || b.length || c) {
+            c = (~~a.pop() - ~~b.pop()) - c;
+            d = c < 0 ? c + 10 : c;
+            res = d + res;
+            c = c < 0;
+        }
+        return res.replace(/^0/, '');
+    }
+
+    function add(a, b) {
+        var res = '',
+            c = 0;
+        a = a.split('');
+        b = b.split('');
+        while (a.length || b.length || c) {
+            c += ~~a.pop() + ~~b.pop();
+            res = c % 10 + res;
+            c = c > 9;
+        }
+        return res;
+    }
+
+    // console.log(m);
+    </script>
+</body>
+
+</html>
